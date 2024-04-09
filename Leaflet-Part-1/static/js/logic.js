@@ -1,4 +1,4 @@
-// Create a map object
+// Create a map object, which shows the entire US when opened
 let myMap = L.map("map", {
     center: [39.1, -95.7],
     zoom: 5
@@ -16,9 +16,6 @@ function quakeMarkers (response) {
 
     //pull the information for all earthquakes
     let features = response.features;
-
-    //initialize an array to hold earthquake markers
-    //let markers = [];
 
     //Loop through the array of features
     for (let index = 0; index < features.length; index++) {
@@ -61,6 +58,37 @@ function quakeMarkers (response) {
         .addTo(myMap);
         
     }
+
+        //Set up a legend
+        let legend = L.control({position: "bottomright"});
+
+        legend.onAdd = function() {
+            let div = L.DomUtil.create("div", "info legend");
+            //lists of colors used and their corresponding values
+            let limits = ["≤10", "11-30", "31-50", "51-70", "71-90", ">90"];
+            let colors = ["#24b768", "#22b3b7", "#205eb7", "#351db8", "#8c1bb8", "#b8198b" ];
+            let labels = [];
+        
+        //Add a title to the legend
+        let legendInfo = "<h1>Depth of Earthquake (km)</h1>"
+
+        div.innerHTML = legendInfo;
+
+        //Populate the legend with color and value arrays created earlier
+        //See CSS for Legend style code
+        limits.forEach(function(limit, index) {
+            labels.push(
+                "<li style=\"background-color: " + colors[index] + "\">" + 
+                "<span>" + limits[index] + "</span>" +
+                "</li>");
+
+        });
+
+        div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+        return div;
+     };
+        //Add legend to map
+        legend.addTo(myMap);
 
 }
 
